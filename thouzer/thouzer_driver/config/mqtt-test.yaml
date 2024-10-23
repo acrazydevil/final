@@ -1,0 +1,35 @@
+mqtt:
+  client:
+    protocol: 4      # MQTTv311
+  connection:
+    host: 192.168.212.1
+    # host: localhost
+    port: 1883
+    keepalive: 60
+  account:
+    username: "SmartRobot"
+    password: "SmartRobot"
+
+serializer: json:dumps
+deserializer: json:loads
+bridge:
+  - factory: mqtt_bridge.bridge:MqttToRosBridge
+    msg_type: thouzer_msgs.msg:Battery
+    topic_from: 0/WHISPERER/RMS-10B1-AAJ65/battery
+    topic_to: /thouzer/battery
+  - factory: mqtt_bridge.bridge:RosToMqttBridge
+    msg_type: thouzer_msgs.msg:Commander
+    topic_from: /thouzer/commander
+    topic_to: 0/THOUZER_HW/RMS-10B1-AAJ65/exec/cmd
+  - factory: mqtt_bridge.bridge:RosToMqttBridge
+    msg_type: thouzer_msgs.msg:Vel
+    topic_from: /thouzer/vel
+    topic_to: 0/WHISPERER/RMS-10B1-AAJ65/nav
+  - factory: mqtt_bridge.bridge:MqttToRosBridge
+    msg_type: thouzer_msgs.msg:Odom
+    topic_from: 0/WHISPERER/RMS-10B1-AAJ65/pos2D_DWO
+    topic_to: /thouzer/odom
+  - factory: mqtt_bridge.bridge:MqttToRosBridge
+    msg_type: thouzer_msgs.msg:App
+    topic_from: 0/THOUZER_HW/RMS-10B1-AAJ65/status/app
+    topic_to: /thouzer/status/app
